@@ -41,6 +41,8 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NationalInstruments.Common, Version=15.0.40.49154, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.DAQmx, Version=15.1.40.61, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=x86" />
     <Reference Include="System" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
@@ -107,6 +109,7 @@
     <Content Include="index.html" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DAQmxTriggeredMultiAI.cs" />
     <Compile Include="DataPoint.cs" />
     <Compile Include="DataSet.cs" />
     <Compile Include="Experiment.cs" />

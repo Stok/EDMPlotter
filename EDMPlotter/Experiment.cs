@@ -24,6 +24,8 @@ namespace EDMPlotter
         object updateDataLock = new object();
         Thread experimentThread;
 
+        DAQmxTriggeredMultiAI hardware;
+
         public Experiment(IHubConnectionContext<dynamic> clients)
         {
             Clients = clients;
@@ -32,6 +34,9 @@ namespace EDMPlotter
             //When you create a new experiment, add to the list here.
             allAvailableExperiments.Add(new ExperimentParameters("fake experiment"));
             allAvailableExperiments.Add(new ExperimentParameters("other experiment"));
+
+            hardware = new DAQmxTriggeredMultiAI();
+
             es = ExperimentState.IsStopped;
         }
 
@@ -113,13 +118,43 @@ namespace EDMPlotter
 
         }
 
+        void runDAQmxTriggeredMultiAIExperiment()
+        {
+            int numberOfPoints = 1000;
+            hardware.ConfigureReadAI(numberOfPoints, false);
+
+            runDAQmxTriggerMultiAIExperimentLoop(numberOfPoints);
+
+            hardware.DisposeAITask();
+        }
+        void runDAQmxTriggerMultiAIExperimentLoop(int numberOfPoints)
+        {
+            double[,] data = hardware.ReadAI(numberOfPoints);
+
+            lock (updateDataLock)
+            {
+                for (int i = 0; i < numberOfPoints; i++)
+                {
+                    dataSet.Add(new DataPoint(i, data[0, i]));
+                }
+            }
+
+            updatePlot();
+
+            if (keepRunningCheck())
+            {
+                runDAQmxTriggerMultiAIExperimentLoop(numberOfPoints);
+            }
+        }
+
         #endregion
 
         #region private 
         void run()
         {
             //Run whatever experiment you want here. At the moment, run fake.
-            runFakeExperiment();
+            //runFakeExperiment();
+            runDAQmxTriggeredMultiAIExperiment();
         }
 
         //Checks if experiment should keep going. Should be Threadsafe.
