@@ -1,44 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDMPlotter", "EDMPlotter\EDMPlotter.csproj", "{BCE99AFE-C0D9-4F5F-9991-D18910D6855D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Buffer|Any CPU = Buffer|Any CPU
-		BufferClassic|Any CPU = BufferClassic|Any CPU
 		Debug|Any CPU = Debug|Any CPU
-		Decelerator|Any CPU = Decelerator|Any CPU
-		EDM|Any CPU = EDM|Any CPU
-		EDMAnalysis|Any CPU = EDMAnalysis|Any CPU
-		Parity|Any CPU = Parity|Any CPU
 		Release|Any CPU = Release|Any CPU
-		SrF|Any CPU = SrF|Any CPU
-		Sympathetic|Any CPU = Sympathetic|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BCE99AFE-C0D9-4F5F-9991-D18910D6855D}.Buffer|Any CPU.ActiveCfg = Release|Any CPU
-		{BCE99AFE-C0D9-4F5F-9991-D18910D6855D}.Buffer|Any CPU.Build.0 = Release|Any CPU
-		{BCE99AFE-C0D9-4F5F-9991-D18910D6855D}.BufferClassic|Any CPU.ActiveCfg = Release|Any CPU
-		{BCE99AFE-C0D9-4F5F-9991-D18910D6855D}.BufferClassic|Any CPU.Build.0 = Release|Any CPU
 		{BCE99AFE-C0D9-4F5F-9991-D18910D6855D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BCE99AFE-C0D9-4F5F-9991-D18910D6855D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BCE99AFE-C0D9-4F5F-9991-D18910D6855D}.Decelerator|Any CPU.ActiveCfg = Debug|Any CPU
-		{BCE99AFE-C0D9-4F5F-9991-D18910D6855D}.Decelerator|Any CPU.Build.0 = Debug|Any CPU
-		{BCE99AFE-C0D9-4F5F-9991-D18910D6855D}.EDM|Any CPU.ActiveCfg = Release|Any CPU
-		{BCE99AFE-C0D9-4F5F-9991-D18910D6855D}.EDM|Any CPU.Build.0 = Release|Any CPU
-		{BCE99AFE-C0D9-4F5F-9991-D18910D6855D}.EDMAnalysis|Any CPU.ActiveCfg = Release|Any CPU
-		{BCE99AFE-C0D9-4F5F-9991-D18910D6855D}.EDMAnalysis|Any CPU.Build.0 = Release|Any CPU
-		{BCE99AFE-C0D9-4F5F-9991-D18910D6855D}.Parity|Any CPU.ActiveCfg = Release|Any CPU
-		{BCE99AFE-C0D9-4F5F-9991-D18910D6855D}.Parity|Any CPU.Build.0 = Release|Any CPU
 		{BCE99AFE-C0D9-4F5F-9991-D18910D6855D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCE99AFE-C0D9-4F5F-9991-D18910D6855D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BCE99AFE-C0D9-4F5F-9991-D18910D6855D}.SrF|Any CPU.ActiveCfg = Release|Any CPU
-		{BCE99AFE-C0D9-4F5F-9991-D18910D6855D}.SrF|Any CPU.Build.0 = Release|Any CPU
-		{BCE99AFE-C0D9-4F5F-9991-D18910D6855D}.Sympathetic|Any CPU.ActiveCfg = Release|Any CPU
-		{BCE99AFE-C0D9-4F5F-9991-D18910D6855D}.Sympathetic|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
