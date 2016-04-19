@@ -8,6 +8,7 @@ using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
 using Newtonsoft.Json;
 
+
 namespace EDMPlotter
 {
     public class Experiment
@@ -24,14 +25,18 @@ namespace EDMPlotter
         object updateDataLock = new object();
         Thread experimentThread;
 
+        DAQmxTriggeredMultiAI hardware;
+
         public Experiment(IHubConnectionContext<dynamic> clients)
         {
             Clients = clients;
-            dataSet = new DataSet();
             allAvailableExperiments = new List<ExperimentParameters>();
             //When you create a new experiment, add to the list here.
             allAvailableExperiments.Add(new ExperimentParameters("fake experiment"));
             allAvailableExperiments.Add(new ExperimentParameters("other experiment"));
+
+            hardware = new DAQmxTriggeredMultiAI();
+
             es = ExperimentState.IsStopped;
         }
 
@@ -56,6 +61,7 @@ namespace EDMPlotter
         {
             if (es.Equals(ExperimentState.IsStopped))
             {
+
                 es = ExperimentState.IsStarting;
 
                 experimentThread = new Thread(new ThreadStart(run));
@@ -90,6 +96,14 @@ namespace EDMPlotter
         }
         #endregion
 
+        #region RUN
+        void run()
+        {
+            //Run whatever experiment you want here. At the moment, run fake.
+            //runFakeExperiment();
+            runDAQmxTriggeredMultiAIExperiment();
+        }
+        #endregion
 
         #region various experiments
         //Put different kinds of experiments here.
@@ -113,15 +127,40 @@ namespace EDMPlotter
 
         }
 
+        void runDAQmxTriggeredMultiAIExperiment()
+        {
+            int numberOfPoints = 100;
+            dataSet = new DataSet();
+            hardware.ConfigureReadAI(numberOfPoints, false);
+
+            runDAQmxTriggerMultiAIExperimentLoop(numberOfPoints);
+
+            hardware.DisposeAITask();
+        }
+        void runDAQmxTriggerMultiAIExperimentLoop(int numberOfPoints)
+        {
+            double[,] data = hardware.ReadAI(numberOfPoints);
+            
+            lock (updateDataLock)
+            {
+                for (int i = 0; i < numberOfPoints; i++)
+                {
+                    dataSet.Add(new DataPoint(i, data[0, i]));//;data[0, i], data[1, i]));
+                }
+            }
+
+            updatePlot();
+            /*
+            if (keepRunningCheck())
+            {
+                runDAQmxTriggerMultiAIExperimentLoop(numberOfPoints);
+            }*/
+            //StopExperiment();
+        }
+
         #endregion
 
         #region private 
-        void run()
-        {
-            //Run whatever experiment you want here. At the moment, run fake.
-            runFakeExperiment();
-        }
-
         //Checks if experiment should keep going. Should be Threadsafe.
         bool keepRunningCheck()
         {
@@ -162,15 +201,10 @@ namespace EDMPlotter
         void saveExperiment(string path)
         {
             try {
-                using (FileStream fs = File.Open(@"" + path, FileMode.CreateNew))
-                using (StreamWriter sw = new StreamWriter(fs))
-                using (JsonWriter jw = new JsonTextWriter(sw))
-                {
-                    jw.Formatting = Formatting.Indented;
-
-                    JsonSerializer serializer = new JsonSerializer();
-                    serializer.Serialize(jw, dataSet);
-                }
+                //To JSON
+                //dataSet.SaveJson(path);
+                //To CSV
+                dataSet.SaveCSV(path);
             }
             catch (IOException e)
             {
