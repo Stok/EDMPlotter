@@ -10,7 +10,7 @@ namespace EDMPlotter
 {
     public class DAQmxTriggeredMultiAI
     {
-        private string[] analogInputs = { "Dev1/ai0", "Dev1/ai1", "Dev1/ai2" };
+        private string[] analogInputs = { "Dev1/ai0", "Dev1/ai1"};
         private string trigger = "Dev1/PFI0";
 
         private AnalogMultiChannelReader analogReader;
