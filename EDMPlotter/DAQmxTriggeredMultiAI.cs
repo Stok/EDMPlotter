@@ -10,8 +10,9 @@ namespace EDMPlotter
 {
     public class DAQmxTriggeredMultiAI
     {
-        private string[] analogInputs = { "Dev1/ai0", "Dev1/ai1"};
-        private string trigger = "Dev1/PFI0";
+        private string[] analogInputs = { "/dev1/ai1", "/dev1/ai2"};
+        private string[] inputNames = {"a", "b"};
+        private string trigger = "/dev1/PFI0";
 
         private AnalogMultiChannelReader analogReader;
 
@@ -21,18 +22,20 @@ namespace EDMPlotter
         {
             readAIsTask = new Task("readAI");
 
-            foreach (string s in analogInputs)
+            for(int i = 0; i < 2; i++)
             {
-                readAIsTask.AIChannels.CreateVoltageChannel(s, s, AITerminalConfiguration.Nrse, -10, 10, AIVoltageUnits.Volts);
+                readAIsTask.AIChannels.CreateVoltageChannel(analogInputs[i], inputNames[i], AITerminalConfiguration.Rse, -10, 10, AIVoltageUnits.Volts);
             }
+
+            readAIsTask.Timing.ConfigureSampleClock(
+                   "",
+                   100000,
+                   SampleClockActiveEdge.Rising,
+                   SampleQuantityMode.FiniteSamples, numberOfMeasurements);
 
             if (autostart == false)
             {
-                readAIsTask.Timing.ConfigureSampleClock(
-                   "",
-                   80000,
-                   SampleClockActiveEdge.Rising,
-                   SampleQuantityMode.FiniteSamples, numberOfMeasurements);
+                
 
                 readAIsTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
                     trigger,

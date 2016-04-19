@@ -30,7 +30,6 @@ namespace EDMPlotter
         public Experiment(IHubConnectionContext<dynamic> clients)
         {
             Clients = clients;
-            dataSet = new DataSet();
             allAvailableExperiments = new List<ExperimentParameters>();
             //When you create a new experiment, add to the list here.
             allAvailableExperiments.Add(new ExperimentParameters("fake experiment"));
@@ -62,6 +61,7 @@ namespace EDMPlotter
         {
             if (es.Equals(ExperimentState.IsStopped))
             {
+
                 es = ExperimentState.IsStarting;
 
                 experimentThread = new Thread(new ThreadStart(run));
@@ -100,8 +100,8 @@ namespace EDMPlotter
         void run()
         {
             //Run whatever experiment you want here. At the moment, run fake.
-            runFakeExperiment();
-            //runDAQmxTriggeredMultiAIExperiment();
+            //runFakeExperiment();
+            runDAQmxTriggeredMultiAIExperiment();
         }
         #endregion
 
@@ -129,7 +129,8 @@ namespace EDMPlotter
 
         void runDAQmxTriggeredMultiAIExperiment()
         {
-            int numberOfPoints = 1000;
+            int numberOfPoints = 100;
+            dataSet = new DataSet();
             hardware.ConfigureReadAI(numberOfPoints, false);
 
             runDAQmxTriggerMultiAIExperimentLoop(numberOfPoints);
@@ -139,21 +140,22 @@ namespace EDMPlotter
         void runDAQmxTriggerMultiAIExperimentLoop(int numberOfPoints)
         {
             double[,] data = hardware.ReadAI(numberOfPoints);
-
+            
             lock (updateDataLock)
             {
                 for (int i = 0; i < numberOfPoints; i++)
                 {
-                    dataSet.Add(new DataPoint(data[0, i], data[1, i]));
+                    dataSet.Add(new DataPoint(i, data[0, i]));//;data[0, i], data[1, i]));
                 }
             }
 
             updatePlot();
-
+            /*
             if (keepRunningCheck())
             {
                 runDAQmxTriggerMultiAIExperimentLoop(numberOfPoints);
-            }
+            }*/
+            //StopExperiment();
         }
 
         #endregion
