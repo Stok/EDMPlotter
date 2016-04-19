@@ -131,8 +131,12 @@
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <ItemGroup>
+    <ProjectReference Include="..\DAQ\DAQ.csproj">
+      <Project>{a571419e-adf9-47e7-97ef-14cab721de17}</Project>
+      <Name>DAQ</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SharedCode\SharedCode.csproj">
-      <Project>{8BB61D3B-CC77-4A2F-9817-729DD3311560}</Project>
+      <Project>{8bb61d3b-cc77-4a2f-9817-729dd3311560}</Project>
       <Name>SharedCode</Name>
     </ProjectReference>
   </ItemGroup>

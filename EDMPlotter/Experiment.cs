@@ -7,7 +7,7 @@ using System.Threading;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
 using Newtonsoft.Json;
-//using DAQ;
+using DAQ;
 using SharedCode;
 
 
@@ -101,6 +101,7 @@ namespace EDMPlotter
         #region RUN
         void run()
         {
+            parameters = new ExperimentParameters();
 			parameters.NumberOfPoints = 1000;
 
 			hardware.Initialise (parameters);

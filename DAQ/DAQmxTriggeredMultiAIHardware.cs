@@ -96,8 +96,8 @@ namespace DAQ
             {
                 //data = null;
                 System.Diagnostics.Debug.WriteLine(e.Message.ToString());
-                DisposeAITask();
-                ConfigureReadAI(numberOfMeasurements, false);
+                Dispose();
+                //ConfigureReadAI(numberOfMeasurements, false);
             }
 
             return data;
