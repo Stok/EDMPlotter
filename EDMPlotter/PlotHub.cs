@@ -38,11 +38,6 @@ namespace EDMPlotter
             Experiment.Instance.SaveExperiment(path);
         }
 
-        public void GetListOfAvailableExperiments()
-        {
-            Experiment.Instance.GetListOfAvailableExperiments();
-        }
-
     }
 
 

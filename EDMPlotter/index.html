@@ -8,9 +8,6 @@
 </head>
 <body>
     <div class="controlpanel">
-        <!--<select id="expdropdown">
-            <option value="None">Select experiment:</option>
-        </select>-->
         <input type="button" id="plotbutton" value="Start" />
         <input type="button" id="stopplotbutton" value="Stop" />
         <input type="button" id="clearplotbutton" value="Clear" />
@@ -48,14 +45,6 @@
                 clearData("#" + "plot");
             }
 
-            //Populates the drop-down menu of experiments
-            /*pHub.client.pushExperimentList = function (exps) {
-                var jsonExp = JSON.parse(exps);
-                var opts = '<option value="None">Select experiment:</option>';
-                $.each(jsonExp, function (key, item) { opts += '<option value="' + item.name + '">' + item.name + '</option>'; });
-                $('#expdropdown').html(opts);
-            };*/
-
                     // Start the connection, and start plotting!
                 $.connection.hub.start().done(function () {
                     $('#plotbutton').click(function () {
@@ -81,11 +70,6 @@
                     pHub.server.save($('#savepathtextbox').val());
                 });
 
-                    /*
-                $('#expdropdown').click(function () {
-                    //Gets list of available experiments.
-                    pHub.server.getListOfAvailableExperiments();
-                });*/
 
             });
             

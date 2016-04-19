@@ -4,22 +4,60 @@ using System.Linq;
 using System.Web;
 using NationalInstruments;
 using NationalInstruments.DAQmx;
+using SharedCode;
 
-
-namespace EDMPlotter
+namespace DAQ
 {
-    public class DAQmxTriggeredMultiAI
+	public class DAQmxTriggeredMultiAIHardware : IExperimentHardware
     {
         private string[] analogInputs = { "/dev1/ai1", "/dev1/ai2"};
         private string[] inputNames = {"a", "b"};
         private string trigger = "/dev1/PFI0";
 
+		object updateDataLock = new object();
+
         private AnalogMultiChannelReader analogReader;
 
         private Task readAIsTask;
 
-        public void ConfigureReadAI(int numberOfMeasurements, bool autostart) //AND CAVITY VOLTAGE!!! 
+		DataSet data;
+		ExperimentParameters parameters;
+
+		#region public region
+
+		public void Initialise(ExperimentParameters p)
+		{
+			parameters = p;
+			configureReadAI (parameters.NumberOfPoints, false);
+		}
+
+		public DataSet Run()
+		{
+			double[,] d = readAI (parameters.NumberOfPoints);
+			lock (updateDataLock)
+			{
+				for (int i = 0; i < parameters.NumberOfPoints; i++)
+				{
+					data.Add(new DataPoint(i, d[0, i]));
+				}
+			}
+			return data;
+		}
+
+		public void Dispose()
+		{
+			readAIsTask.Dispose();
+		}
+
+		#endregion
+
+
+		#region private region
+
+        void configureReadAI(int numberOfMeasurements, bool autostart) //AND CAVITY VOLTAGE!!! 
         {
+			data = new DataSet ();
+
             readAIsTask = new Task("readAI");
 
             for(int i = 0; i < 2; i++)
@@ -46,7 +84,7 @@ namespace EDMPlotter
         }
 
 
-        public double[,] ReadAI(int numberOfMeasurements)
+        double[,] readAI(int numberOfMeasurements)
         {
             double[,] data = new double[analogInputs.Length, numberOfMeasurements];//Cheezy Bugfix
             try
@@ -64,13 +102,8 @@ namespace EDMPlotter
 
             return data;
         }
-
-
-        public void DisposeAITask()
-        {
-            readAIsTask.Dispose();
-        }
-
+			
+		#endregion
 
     }
 }

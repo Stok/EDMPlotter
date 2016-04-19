@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace EDMPlotter
+namespace SharedCode
 {
     public class DataPoint
     {
