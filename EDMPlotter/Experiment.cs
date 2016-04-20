@@ -56,12 +56,14 @@ namespace EDMPlotter
 
 
         #region public
-        public void StartExperiment()
+        public void StartExperiment(string jsonParams)
         {
             if (es.Equals(ExperimentState.IsStopped))
             {
 
                 es = ExperimentState.IsStarting;
+
+                initialiseExperimentalParameters(jsonParams);
 
                 experimentThread = new Thread(new ThreadStart(run));
                 experimentThread.Start();
@@ -101,10 +103,8 @@ namespace EDMPlotter
         #region RUN
         void run()
         {
-            parameters = new ExperimentParameters();
-			parameters.NumberOfPoints = 1000;
-
-			hardware.Initialise (parameters);
+            
+            hardware.Initialise (parameters);
 
 			dataSet = hardware.Run ();
 
@@ -130,7 +130,29 @@ namespace EDMPlotter
                 Console.WriteLine(e.Message);
             }
         }
-        
+
+        void initialiseExperimentalParameters(string jsonParams)
+        {
+
+            try {parameters = JsonConvert.DeserializeObject<ExperimentParameters>(jsonParams);}
+            catch (JsonException e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine("Loading default values.");
+                jsonParams = @"{
+                                    'NumberOfPoints': '1000',
+                                    'AINames': ['a', 'b'],
+                                    'AIAddresses': ['/dev1/ai1', '/dev1/ai2'],
+                                    'AutoStart' : 'false',
+                                    'TriggerAddress': '/dev1/PFI0',
+                                    'SampleRate': '200'
+                                }";
+                parameters = JsonConvert.DeserializeObject<ExperimentParameters>(jsonParams);
+            }
+
+
+        }
+
     }
     #endregion
 }
