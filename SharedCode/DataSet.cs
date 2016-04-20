@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using System.IO;
 using Jitbit.Utils;
 
-namespace EDMPlotter
+namespace SharedCode
 {
     public class DataSet
     {

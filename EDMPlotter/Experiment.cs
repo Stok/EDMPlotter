@@ -7,6 +7,8 @@ using System.Threading;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
 using Newtonsoft.Json;
+using DAQ;
+using SharedCode;
 
 
 namespace EDMPlotter
@@ -18,25 +20,22 @@ namespace EDMPlotter
 
 
         DataSet dataSet;
-        List<ExperimentParameters> allAvailableExperiments;
+		ExperimentParameters parameters;
         enum ExperimentState { IsStopped, IsStarting, IsRunning, IsFinishing}
         ExperimentState es; //What's the meanning of es ?
 
         object keepRunningCheckLock = new object();
-        object updateDataLock = new object();
+        
         Thread experimentThread;
 
-        DAQmxTriggeredMultiAI hardware;
+		IExperimentHardware hardware;
 
         public Experiment(IHubConnectionContext<dynamic> clients)
         {
             Clients = clients;
-            allAvailableExperiments = new List<ExperimentParameters>();
-            //When you create a new experiment, add to the list here.
-            allAvailableExperiments.Add(new ExperimentParameters("fake experiment"));
-            allAvailableExperiments.Add(new ExperimentParameters("other experiment"));
 
-            hardware = new DAQmxTriggeredMultiAI();
+			//hardware = new DAQmxTriggeredMultiAIHardware();
+			hardware = new FakeHardware();
 
             es = ExperimentState.IsStopped;
         }
@@ -83,121 +82,41 @@ namespace EDMPlotter
             }
             es = ExperimentState.IsStopped;
         }
+
         public void ClearExperiment()
         {
-            clearExperiment();
+			if (es.Equals (ExperimentState.IsStopped)) {
+				Clients.All.clearData ();
+			}
         }
         public void SaveExperiment(string path)
-        {
-            saveExperiment(path);
+		{			
+			if (es.Equals (ExperimentState.IsStopped)) {
+				saveExperiment(path);
+			}
+            
         }
-        public void GetListOfAvailableExperiments()
-        {
-            pushListOfExperiments();
-        }
+
         #endregion
 
         #region RUN
         void run()
         {
-            //Run whatever experiment you want here. At the moment, run fake.
-            //runFakeExperiment();
-            runDAQmxTriggeredMultiAIExperiment();
+            parameters = new ExperimentParameters();
+			parameters.NumberOfPoints = 1000;
+
+			hardware.Initialise (parameters);
+
+			dataSet = hardware.Run ();
+
+			//Push data down to the client like this.
+			Clients.All.pushData(dataSet.ToJson());
+
+			hardware.Dispose();
         }
-        #endregion
-
-        #region various experiments
-        //Put different kinds of experiments here.
-        Random rnd = new Random();
-        void runFakeExperiment()
-        {
-            lock (updateDataLock)
-            {
-                dataSet.Add(new DataPoint(dataSet.Length, (double)dataSet.Length * dataSet.Length + rnd.Next(-1, 1)));
-            }
-
-            updatePlot();
-
-            Thread.Sleep(1000);
-
-
-            if (keepRunningCheck())
-            {
-                runFakeExperiment();
-            }
-
-        }
-
-        void runDAQmxTriggeredMultiAIExperiment()
-        {
-            int numberOfPoints = 100;
-            dataSet = new DataSet();
-            hardware.ConfigureReadAI(numberOfPoints, false);
-
-            runDAQmxTriggerMultiAIExperimentLoop(numberOfPoints);
-
-            hardware.DisposeAITask();
-        }
-        void runDAQmxTriggerMultiAIExperimentLoop(int numberOfPoints)
-        {
-            double[,] data = hardware.ReadAI(numberOfPoints);
-            
-            lock (updateDataLock)
-            {
-                for (int i = 0; i < numberOfPoints; i++)
-                {
-                    dataSet.Add(new DataPoint(i, data[0, i]));//;data[0, i], data[1, i]));
-                }
-            }
-
-            updatePlot();
-            /*
-            if (keepRunningCheck())
-            {
-                runDAQmxTriggerMultiAIExperimentLoop(numberOfPoints);
-            }*/
-            //StopExperiment();
-        }
-
         #endregion
 
         #region private 
-        //Checks if experiment should keep going. Should be Threadsafe.
-        bool keepRunningCheck()
-        {
-            bool _ShouldKeepRunning;
-            lock (keepRunningCheckLock)
-            {
-                if (es.Equals(ExperimentState.IsRunning))
-                {
-                    _ShouldKeepRunning = true;
-                }
-                else
-                {
-                    _ShouldKeepRunning = false;
-                }
-            }
-            return _ShouldKeepRunning;
-        }
-
-        void updatePlot()
-        {
-            //Push data down to the client like this.
-            Clients.All.pushData(dataSet.ToJson());
-        }
-
-        void pushListOfExperiments()
-        {
-            string jsonExpTypes = JsonConvert.SerializeObject(allAvailableExperiments.ToArray());
-            //This sends a list of available experiments to users.
-            Clients.All.pushExperimentList(jsonExpTypes);
-        }
-
-        void clearExperiment()
-        {
-            Clients.All.clearData();
-            dataSet = new DataSet();
-        }
 
         void saveExperiment(string path)
         {
