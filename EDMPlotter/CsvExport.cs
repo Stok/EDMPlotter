@@ -106,7 +106,7 @@ namespace Jitbit.Utils
 			if (output.Contains(",") || output.Contains("\"") || output.Contains("\n") || output.Contains("\r"))
 				output = '"' + output.Replace("\"", "\"\"") + '"';
 
-			if (output.Length > 30000) //cropping value for stupid Excel
+			if (output.Length > 30000) //cropping value for stupid Excel (Seriously ???)
 			{
 				if (output.EndsWith("\""))
 				{

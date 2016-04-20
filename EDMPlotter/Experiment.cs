@@ -20,7 +20,7 @@ namespace EDMPlotter
         DataSet dataSet;
         List<ExperimentParameters> allAvailableExperiments;
         enum ExperimentState { IsStopped, IsStarting, IsRunning, IsFinishing}
-        ExperimentState es;
+        ExperimentState es; //What's the meanning of es ?
 
         object keepRunningCheckLock = new object();
         object updateDataLock = new object();
