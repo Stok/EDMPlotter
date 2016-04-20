@@ -18,9 +18,9 @@ namespace EDMPlotter
            _experiment = e;
         }
 
-        public void StartPlotting()
+        public void StartPlotting(string parameters)
 		{
-            Experiment.Instance.StartExperiment();
+            Experiment.Instance.StartExperiment(parameters);
 		}
 
         public void StopPlotting()

@@ -11,26 +11,42 @@ namespace SharedCode
     public class DataSet
     {
 
-        public List<DataPoint> data;
+        public List<DataPoint> dataSet;
 
         public DataSet()
         {
-            data = new List<DataPoint>();
+            dataSet = new List<DataPoint>();
         }
 
         public int Length
         {
-            get { return data.Count; }
+            get { return dataSet.Count; }
         }
 
         public void Add(DataPoint p)
         {
-            data.Add(p);
+            dataSet.Add(p);
         }
 
+        //Because my plot can only handle 2 dimensions (at the moment), have a cheezy conversion here. Fix later.
+        struct twoDData {
+            public double x_val;
+            public double y_val;
+            public twoDData(double x, double y)
+            {
+                x_val = x;
+                y_val = y;
+            }
+        };
+        List<twoDData> reducedData;
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(data.ToArray());
+            reducedData = new List<twoDData>();
+            foreach(DataPoint d in dataSet)
+            {
+                reducedData.Add(new twoDData(d.Values[0], d.Values[1]));
+            }
+            return JsonConvert.SerializeObject(reducedData.ToArray());
         }
 
         public void SaveJson(string path)
@@ -50,11 +66,13 @@ namespace SharedCode
         public void SaveCSV(string path)
         {
             CsvExport csv = new CsvExport();
-            for (int i = 0; i < this.Length; i++)
+            for (int i = 0; i < Length; i++)
             {
                 csv.AddRow();
-                csv["x_val"] = data[i].x_val;
-                csv["y_val"] = data[i].y_val;
+                for(int j = 0; j < dataSet[0].Dimensions(); j++)
+                {
+                    csv[dataSet[i].Names[j]] = dataSet[i].Values[j];
+                }
             }
             csv.ExportToFile(@"" + path);
         }
