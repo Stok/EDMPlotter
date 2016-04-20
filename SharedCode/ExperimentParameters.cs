@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace EDMPlotter
+namespace SharedCode
 {
     public class ExperimentParameters
     {
-        public string name;
+        public int NumberOfPoints;
 
-        public ExperimentParameters(string name)
+        public ExperimentParameters()
         {
-            this.name = name;
         }
     }
 }
