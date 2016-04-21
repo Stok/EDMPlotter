@@ -132,7 +132,9 @@ namespace EDMPlotter
         void initialiseExperimentalParameters(string jsonParams)
         {
 
-            try {parameters = JsonConvert.DeserializeObject<ExperimentParameters>(jsonParams);}
+            try {
+                parameters = JsonConvert.DeserializeObject<ExperimentParameters>(jsonParams);
+            }
             catch (JsonException e)
             {
                 Console.WriteLine(e.Message);
