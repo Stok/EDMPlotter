@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace SharedCode
 {
@@ -23,21 +24,16 @@ namespace SharedCode
         {
             return kvPairs.Count;
         }
-
-        public string ToJson()
+        public JObject ToJson()
         {
-            string jsonPairs = "";
+            JObject o = new JObject();
             for(int i = 0; i < Dimensions(); i++)
             {
-                jsonPairs += "\"" + kvPairs[i].Key.ToString() + "\"" + " : " + kvPairs[i].Value.ToString() ;
-                if(i < Dimensions() - 1)
-                {
-                    jsonPairs += ", ";
-                }
+                o[kvPairs[i].Key] = kvPairs[i].Value;
             }
-            jsonPairs = "{" + jsonPairs + "}";
-            return jsonPairs;
+            return o;
         }
+        
     }
 
 }

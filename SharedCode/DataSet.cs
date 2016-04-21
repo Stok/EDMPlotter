@@ -5,6 +5,7 @@ using System.Web;
 using Newtonsoft.Json;
 using System.IO;
 using Jitbit.Utils;
+using Newtonsoft.Json.Linq;
 
 namespace SharedCode
 {
@@ -30,19 +31,15 @@ namespace SharedCode
 
         public string ToJson()
         {
-            string allData = "";
+            JObject o = new JObject();
+            JArray array = new JArray(); 
             for(int i = 0; i < Length; i++)
             {
-                allData+= Points[i].ToJson();
-                if (i < Length - 1)
-                {
-                    allData += ", ";
-                }
+                array.Add(Points[i].ToJson());
             }
-            allData = "[" + allData + "]";
-            return allData;
+            return array.ToString(Formatting.None);
         }
-
+        
         public void SaveCSV(string path)
         {
             CsvExport csv = new CsvExport();
