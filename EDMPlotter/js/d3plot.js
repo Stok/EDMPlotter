@@ -272,7 +272,7 @@ context.append("g") // Create brushing xAxis
   focus.append("text") // http://stackoverflow.com/questions/22064083/d3-js-multi-series-chart-with-y-value-tracking
         .attr("class", "tooltip")
         .attr("x", width + 20) // position tooltips  
-        .attr("y", function (d, i) { return (legendSpace)+i*(legendSpace); }); // (return (11.25/2 =) 5.625) + i * (5.625) // position tooltips       
+        .attr("y", function (d, i) { return (legendSpace)+i*(legendSpace) + 20; }); // (return (11.25/2 =) 5.625) + i * (5.625) // position tooltips       
 
   // Add mouseover events for hover line.
   d3.select("#mouse-tracker") // select chart plot background rect #mouse-tracker
