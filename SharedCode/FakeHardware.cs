@@ -24,7 +24,7 @@ namespace SharedCode
 			lock (updateDataLock)
 			{
 				for (int i = 0; i < parameters.NumberOfPoints; i++) {
-                    data.Add(new DataPoint(parameters.AINames, new double[] { i, rnd.Next(-1, 1) }));
+                    data.Add(new DataPoint(parameters.AINames, new double[] { i, rnd.Next(-1, 1) + 10 * Math.Cos(0.1 * i) }));
 				}
 			}
 			return data;
