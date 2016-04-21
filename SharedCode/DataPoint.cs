@@ -8,41 +8,35 @@ namespace SharedCode
 {
     public class DataPoint
     {
-        public List<string> Names;
-        public List<double> Values;
-        public DataPoint(string xnam, double x, string ynam, double y)
-        {
-            Names = new List<string>();
-            Values = new List<double>();
-            Names.Add(xnam);
-            Values.Add(x);
-            Names.Add(ynam);
-            Values.Add(y);
-        }
+        public List<KeyValuePair<string, double>> kvPairs;
 
         public DataPoint(string[] names, double[] vals)
         {
-            Names = new List<string>();
-            Values = new List<double>();
+            kvPairs = new List<KeyValuePair<string, double>>();
             for (int i = 0; i < names.Length; i++)
             {
-                Names.Add(names[i]);
-                Values.Add(vals[i]);
+                kvPairs.Add(new KeyValuePair<string, double>(names[i], vals[i]));
             }
         }
 
         public int Dimensions()
         {
-            return Values.Count;
+            return kvPairs.Count;
         }
 
-        struct twoDData { public double x_val; public double y_val; };
-        public string To2DJson()
+        public string ToJson()
         {
-            twoDData d = new twoDData();
-            d.x_val = Values[0];
-            d.y_val = Values[1];
-            return JsonConvert.SerializeObject(d);
+            string jsonPairs = "";
+            for(int i = 0; i < Dimensions(); i++)
+            {
+                jsonPairs += "\"" + kvPairs[i].Key.ToString() + "\"" + " : " + kvPairs[i].Value.ToString() ;
+                if(i < Dimensions() - 1)
+                {
+                    jsonPairs += ", ";
+                }
+            }
+            jsonPairs = "{" + jsonPairs + "}";
+            return jsonPairs;
         }
     }
 

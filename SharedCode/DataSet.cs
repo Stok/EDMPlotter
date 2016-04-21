@@ -11,56 +11,36 @@ namespace SharedCode
     public class DataSet
     {
 
-        public List<DataPoint> dataSet;
+        public List<DataPoint> Points;
 
         public DataSet()
         {
-            dataSet = new List<DataPoint>();
+            Points = new List<DataPoint>();
         }
 
         public int Length
         {
-            get { return dataSet.Count; }
+            get { return Points.Count; }
         }
 
         public void Add(DataPoint p)
         {
-            dataSet.Add(p);
+            Points.Add(p);
         }
 
-        //Because my plot can only handle 2 dimensions (at the moment), have a cheezy conversion here. Fix later.
-        struct twoDData {
-            public double x_val;
-            public double y_val;
-            public twoDData(double x, double y)
-            {
-                x_val = x;
-                y_val = y;
-            }
-        };
-        List<twoDData> reducedData;
         public string ToJson()
         {
-            reducedData = new List<twoDData>();
-            foreach(DataPoint d in dataSet)
+            string allData = "";
+            for(int i = 0; i < Length; i++)
             {
-                reducedData.Add(new twoDData(d.Values[0], d.Values[1]));
+                allData+= Points[i].ToJson();
+                if (i < Length - 1)
+                {
+                    allData += ", ";
+                }
             }
-            return JsonConvert.SerializeObject(reducedData.ToArray());
-        }
-
-        public void SaveJson(string path)
-        {
-            //For writing to JSON
-            using (FileStream fs = File.Open(@"" + path, FileMode.CreateNew))
-            using (StreamWriter sw = new StreamWriter(fs))
-            using (JsonWriter jw = new JsonTextWriter(sw))
-            {
-                jw.Formatting = Formatting.Indented;
-
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.Serialize(jw, this);
-            }
+            allData = "[" + allData + "]";
+            return allData;
         }
 
         public void SaveCSV(string path)
@@ -69,9 +49,9 @@ namespace SharedCode
             for (int i = 0; i < Length; i++)
             {
                 csv.AddRow();
-                for(int j = 0; j < dataSet[0].Dimensions(); j++)
+                foreach(KeyValuePair<string, double> p in Points[i].kvPairs)
                 {
-                    csv[dataSet[i].Names[j]] = dataSet[i].Values[j];
+                    csv[p.Key] = p.Value;
                 }
             }
             csv.ExportToFile(@"" + path);

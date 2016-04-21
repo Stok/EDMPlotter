@@ -120,8 +120,6 @@ namespace EDMPlotter
         void saveExperiment(string path)
         {
             try {
-                //To JSON
-                //dataSet.SaveJson(path);
                 //To CSV
                 dataSet.SaveCSV(path);
             }
