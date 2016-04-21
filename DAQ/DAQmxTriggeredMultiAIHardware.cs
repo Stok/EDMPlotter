@@ -84,6 +84,7 @@ namespace DAQ
                     parameters.TriggerAddress,
                     DigitalEdgeStartTriggerEdge.Rising);
             }
+            readAIsTask.Stream.Timeout = -1;
             readAIsTask.Control(TaskAction.Verify);
             analogReader = new AnalogMultiChannelReader(readAIsTask.Stream);
         }
