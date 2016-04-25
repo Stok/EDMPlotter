@@ -103,9 +103,11 @@ namespace Jitbit.Utils
 				return ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss");
 			}
 			string output = value.ToString().Trim();
-			if (output.Contains(",") || output.Contains("\"") || output.Contains("\n") || output.Contains("\r"))
-				output = '"' + output.Replace("\"", "\"\"") + '"';
-
+            if (output.Contains(",") || output.Contains("\"") || output.Contains("\n") || output.Contains("\r"))
+            {
+                //output = '"' + output.Replace("\"", "\"\"") + '"';
+                output = output.Replace(",", ".");
+            }
 			if (output.Length > 30000) //cropping value for stupid Excel (Seriously ???)
 			{
 				if (output.EndsWith("\""))
