@@ -18,10 +18,11 @@ namespace EDMPlotter
         #region Declarations, constructors, accessors
         private readonly static Lazy<Experiment> _instance = new Lazy<Experiment>(() => new Experiment(GlobalHost.ConnectionManager.GetHubContext<PlotHub>().Clients));
 
+
         DataSet dataSet;
 		ExperimentParameters parameters;
         enum ExperimentState { IsStopped, IsStarting, IsRunning, IsFinishing}
-        ExperimentState es;
+        ExperimentState es; //What's the meanning of es ?
 
         object keepRunningCheckLock = new object();
         
