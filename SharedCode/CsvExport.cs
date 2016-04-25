@@ -104,9 +104,10 @@ namespace Jitbit.Utils
 			}
 			string output = value.ToString().Trim();
 			if (output.Contains(",") || output.Contains("\"") || output.Contains("\n") || output.Contains("\r"))
-				output = '"' + output.Replace("\"", "\"\"") + '"';
+				output = '"' + output.Replace("\"", "\"\"") + '"'; //ça c'est l'ancien code. Remettre celui-ci si problème pas résolu
+                //output = '.' + output.Replace("\"", "\"\"") + '.';
 
-			if (output.Length > 30000) //cropping value for stupid Excel
+            if (output.Length > 30000) //cropping value for stupid Excel
 			{
 				if (output.EndsWith("\""))
 				{
@@ -157,10 +158,12 @@ namespace Jitbit.Utils
 			return sb.ToString();
 		}
 
-		/// <summary>
-		/// Exports to a file
-		/// </summary>
-		public void ExportToFile(string path)
+        /// <summary>
+        /// Exports to a file
+        /// </summary>
+        /// 
+       
+        public void ExportToFile(string path)
 		{
 			File.WriteAllLines(path, ExportToLines(), Encoding.UTF8);
 		}
@@ -173,5 +176,19 @@ namespace Jitbit.Utils
 			var data = Encoding.UTF8.GetBytes(Export());
 			return Encoding.UTF8.GetPreamble().Concat(data).ToArray();
 		}
-	}
+
+        /*public void ExportToFile(string path)
+        {
+            File.WriteAllLines(path, ExportToLines(), Encoding.ASCII);
+        }
+
+        /// <summary>
+        /// Exports as raw ASCII bytes
+        /// </summary>
+        public byte[] ExportToBytes()
+        {
+            var data = Encoding.ASCII.GetBytes(Export());
+            return Encoding.ASCII.GetPreamble().Concat(data).ToArray();
+        }*/
+    }
 }

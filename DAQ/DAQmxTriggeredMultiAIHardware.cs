@@ -10,9 +10,6 @@ namespace DAQ
 {
 	public class DAQmxTriggeredMultiAIHardware : IExperimentHardware
     {
-        //private string[] analogInputs = { "/dev1/ai1", "/dev1/ai2"};
-        //private string[] inputNames = {"a", "b"};
-        //private string trigger = "/dev1/PFI0";
 
 		object updateDataLock = new object();
 
@@ -28,7 +25,7 @@ namespace DAQ
 		public void Initialise(ExperimentParameters p)
 		{
 			parameters = p;
-			configureReadAI (parameters.NumberOfPoints, false);
+			configureReadAI (parameters.NumberOfPoints, parameters.AutoStart);
 		}
 
 		public DataSet Run()
@@ -72,7 +69,7 @@ namespace DAQ
 
             readAIsTask.Timing.ConfigureSampleClock(
                    "",
-                   parameters.NumberOfPoints,
+                   parameters.SampleRate,
                    SampleClockActiveEdge.Rising,
                    SampleQuantityMode.FiniteSamples, numberOfMeasurements);
 

@@ -17,13 +17,13 @@
     </div>
     <div class="controlpanel">
 
-       <form id="ExpParams">
+       <form name="ExpParams" id="ExpParams">
            Auto-trigger:<br>
-           <input type="text" id="AutoStart" value="false"><br>
+           <input type="text" name="AutoStart" id="AutoStart" value="false"><br>
            Number of points:<br>
-           <input type="text" id="NumberOfPoints" value="1000"><br>
+           <input type="text" name="NumberOfPoints" id="NumberOfPoints" value="1000"><br>
            Sample rate:<br>
-           <input type="text" id="SampleRate" value="200"><br>
+           <input type="text" name="SampleRate" id="SampleRate" value="200"><br>
        </form>
 
         </div>
@@ -44,26 +44,7 @@
     <!--Add script to plot some data.-->
     <script src="js/d3plot.js" type="text/javascript"></script>
     <script type="text/javascript">
-
-        /*var params = {
-            'NumberOfPoints': '1000',
-            'AINames': ['x_val', 'y_val', 'y_val1', 'y_val2'],
-            'AIAddresses': ['/dev1/ai1', '/dev1/ai2', '/dev1/ai3', '/dev1/ai4'],
-            'AutoStart': 'false',
-            'TriggerAddress': '/dev1/PFI0',
-            'SampleRate': '200'
-        };*/
-        //Get some of the parameters from form. Rest are preset.
-        var params = {
-            'NumberOfPoints': parseInt($('#NumberOfPoints').val()),
-            'AINames': ['x_val', 'y_val', 'y_val1', 'y_val2'],
-            'AIAddresses': ['/dev1/ai1', '/dev1/ai2', '/dev1/ai3', '/dev1/ai4'],
-            'AutoStart': Boolean($('#AutoStart').val()),
-            'TriggerAddress': '/dev1/PFI0',
-            'SampleRate':parseInt($('#SampleRate').val())
-        };
         
-
         //These control the server's data-pushing down to the client.
         $(function () {
             // Declare a proxy to reference the hub. 
@@ -84,6 +65,17 @@
             $.connection.hub.start().done(function () {
 
                 $('#plotbutton').click(function () {
+
+                    var params = {
+                        'NumberOfPoints': document.querySelector('#NumberOfPoints').value,
+                        'AINames': ['x_val', 'dc', '1f', '2f'],
+                        'AIAddresses': ['/dev1/ai1', '/dev1/ai2', '/dev1/ai3', '/dev1/ai4'],
+                        'AutoStart': document.querySelector('#AutoStart').value, 
+                        'TriggerAddress': '/dev1/PFI0',
+                        'SampleRate': document.querySelector('#SampleRate').value
+                    };
+
+                    //alert(JSON.stringify(params));
                     // Call the StartPlotting method on the hub. 
                     pHub.server.startPlotting(JSON.stringify(params));
 

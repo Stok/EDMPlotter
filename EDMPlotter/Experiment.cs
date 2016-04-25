@@ -33,8 +33,8 @@ namespace EDMPlotter
         {
             Clients = clients;
 
-			//hardware = new DAQmxTriggeredMultiAIHardware();
-			hardware = new FakeHardware();
+			hardware = new DAQmxTriggeredMultiAIHardware();
+			//hardware = new FakeHardware();
 
             es = ExperimentState.IsStopped;
         }
@@ -140,13 +140,13 @@ namespace EDMPlotter
                 Console.WriteLine(e.Message);
                 Console.WriteLine("Loading default values.");
                 jsonParams = @"{
-                                    'NumberOfPoints': '1000',
-                                    'AINames': ['a', 'b'],
-                                    'AIAddresses': ['/dev1/ai1', '/dev1/ai2'],
-                                    'AutoStart' : 'false',
-                                    'TriggerAddress': '/dev1/PFI0',
-                                    'SampleRate': '200'
-                                }";
+            'NumberOfPoints': '1000',
+            'AINames': ['x_val', 'y_val', 'y_val1', 'y_val2'],
+            'AIAddresses': ['/dev1/ai1', '/dev1/ai2', '/dev1/ai3', '/dev1/ai4'],
+            'AutoStart': 'false',
+            'TriggerAddress': '/dev1/PFI0',
+            'SampleRate': '200'
+            }";
                 parameters = JsonConvert.DeserializeObject<ExperimentParameters>(jsonParams);
             }
 
