@@ -79,7 +79,7 @@ namespace DAQ
 
                 readAIsTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
                     parameters.TriggerAddress,
-                    DigitalEdgeStartTriggerEdge.Rising);
+                    DigitalEdgeStartTriggerEdge.Falling);
             }
             readAIsTask.Stream.Timeout = -1;
             readAIsTask.Control(TaskAction.Verify);
