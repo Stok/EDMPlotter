@@ -10,9 +10,6 @@ namespace DAQ
 {
 	public class DAQmxTriggeredMultiAIHardware : IExperimentHardware
     {
-        private string[] analogInputs = { "/dev1/ai1", "/dev1/ai2"};
-        private string[] inputNames = {"a", "b"};
-        private string trigger = "/dev1/PFI0";
 
 		object updateDataLock = new object();
 
@@ -28,17 +25,22 @@ namespace DAQ
 		public void Initialise(ExperimentParameters p)
 		{
 			parameters = p;
-			configureReadAI (parameters.NumberOfPoints, false);
+			configureReadAI (parameters.NumberOfPoints, parameters.AutoStart);
 		}
 
 		public DataSet Run()
 		{
 			double[,] d = readAI (parameters.NumberOfPoints);
+            double[] instantD = new double[parameters.AIAddresses.Length];
 			lock (updateDataLock)
 			{
 				for (int i = 0; i < parameters.NumberOfPoints; i++)
 				{
-					data.Add(new DataPoint(i, d[0, i]));
+                    for(int j = 0; j < parameters.AIAddresses.Length; j++)
+                    {
+                        instantD[j] = d[j, i];
+                    }
+                    data.Add(new DataPoint(parameters.AINames, instantD));
 				}
 			}
 			return data;
@@ -54,20 +56,20 @@ namespace DAQ
 
 		#region private region
 
-        void configureReadAI(int numberOfMeasurements, bool autostart) //AND CAVITY VOLTAGE!!! 
+        void configureReadAI(int numberOfMeasurements, bool autostart) 
         {
 			data = new DataSet ();
 
             readAIsTask = new Task("readAI");
 
-            for(int i = 0; i < 2; i++)
+            for(int i = 0; i < parameters.AINames.Length; i++)
             {
-                readAIsTask.AIChannels.CreateVoltageChannel(analogInputs[i], inputNames[i], AITerminalConfiguration.Rse, -10, 10, AIVoltageUnits.Volts);
+                readAIsTask.AIChannels.CreateVoltageChannel(parameters.AIAddresses[i], parameters.AINames[i], AITerminalConfiguration.Rse, -10, 10, AIVoltageUnits.Volts);
             }
 
             readAIsTask.Timing.ConfigureSampleClock(
                    "",
-                   100000,
+                   parameters.SampleRate,
                    SampleClockActiveEdge.Rising,
                    SampleQuantityMode.FiniteSamples, numberOfMeasurements);
 
@@ -76,9 +78,10 @@ namespace DAQ
                 
 
                 readAIsTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
-                    trigger,
-                    DigitalEdgeStartTriggerEdge.Rising);
+                    parameters.TriggerAddress,
+                    DigitalEdgeStartTriggerEdge.Falling);
             }
+            readAIsTask.Stream.Timeout = -1;
             readAIsTask.Control(TaskAction.Verify);
             analogReader = new AnalogMultiChannelReader(readAIsTask.Stream);
         }
@@ -86,7 +89,7 @@ namespace DAQ
 
         double[,] readAI(int numberOfMeasurements)
         {
-            double[,] data = new double[analogInputs.Length, numberOfMeasurements];//Cheezy Bugfix
+            double[,] data = new double[parameters.AIAddresses.Length, numberOfMeasurements];
             try
             {
                 data = analogReader.ReadMultiSample(numberOfMeasurements);
@@ -94,10 +97,8 @@ namespace DAQ
             }
             catch (DaqException e)
             {
-                //data = null;
                 System.Diagnostics.Debug.WriteLine(e.Message.ToString());
                 Dispose();
-                //ConfigureReadAI(numberOfMeasurements, false);
             }
 
             return data;
