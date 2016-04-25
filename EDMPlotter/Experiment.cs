@@ -33,8 +33,8 @@ namespace EDMPlotter
         {
             Clients = clients;
 
-			//hardware = new DAQmxTriggeredMultiAIHardware();
-			hardware = new FakeHardware();
+			hardware = new DAQmxTriggeredMultiAIHardware();
+			//hardware = new FakeHardware();
 
             es = ExperimentState.IsStopped;
         }
@@ -56,12 +56,14 @@ namespace EDMPlotter
 
 
         #region public
-        public void StartExperiment()
+        public void StartExperiment(string jsonParams)
         {
             if (es.Equals(ExperimentState.IsStopped))
             {
 
                 es = ExperimentState.IsStarting;
+
+                initialiseExperimentalParameters(jsonParams);
 
                 experimentThread = new Thread(new ThreadStart(run));
                 experimentThread.Start();
@@ -101,10 +103,8 @@ namespace EDMPlotter
         #region RUN
         void run()
         {
-            parameters = new ExperimentParameters();
-			parameters.NumberOfPoints = 1000;
-
-			hardware.Initialise (parameters);
+            
+            hardware.Initialise (parameters);
 
 			dataSet = hardware.Run ();
 
@@ -120,8 +120,6 @@ namespace EDMPlotter
         void saveExperiment(string path)
         {
             try {
-                //To JSON
-                //dataSet.SaveJson(path);
                 //To CSV
                 dataSet.SaveCSV(path);
             }
@@ -130,7 +128,31 @@ namespace EDMPlotter
                 Console.WriteLine(e.Message);
             }
         }
-        
+
+        void initialiseExperimentalParameters(string jsonParams)
+        {
+
+            try {
+                parameters = JsonConvert.DeserializeObject<ExperimentParameters>(jsonParams);
+            }
+            catch (JsonException e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine("Loading default values.");
+                jsonParams = @"{
+            'NumberOfPoints': '1000',
+            'AINames': ['x_val', 'y_val', 'y_val1', 'y_val2'],
+            'AIAddresses': ['/dev1/ai1', '/dev1/ai2', '/dev1/ai3', '/dev1/ai4'],
+            'AutoStart': 'false',
+            'TriggerAddress': '/dev1/PFI0',
+            'SampleRate': '200'
+            }";
+                parameters = JsonConvert.DeserializeObject<ExperimentParameters>(jsonParams);
+            }
+
+
+        }
+
     }
     #endregion
 }

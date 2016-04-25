@@ -5,56 +5,51 @@ using System.Web;
 using Newtonsoft.Json;
 using System.IO;
 using Jitbit.Utils;
+using Newtonsoft.Json.Linq;
 
 namespace SharedCode
 {
     public class DataSet
     {
 
-        public List<DataPoint> data;
+        public List<DataPoint> Points;
 
         public DataSet()
         {
-            data = new List<DataPoint>();
+            Points = new List<DataPoint>();
         }
 
         public int Length
         {
-            get { return data.Count; }
+            get { return Points.Count; }
         }
 
         public void Add(DataPoint p)
         {
-            data.Add(p);
+            Points.Add(p);
         }
 
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(data.ToArray());
-        }
-
-        public void SaveJson(string path)
-        {
-            //For writing to JSON
-            using (FileStream fs = File.Open(@"" + path, FileMode.CreateNew))
-            using (StreamWriter sw = new StreamWriter(fs))
-            using (JsonWriter jw = new JsonTextWriter(sw))
+            JObject o = new JObject();
+            JArray array = new JArray(); 
+            for(int i = 0; i < Length; i++)
             {
-                jw.Formatting = Formatting.Indented;
-
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.Serialize(jw, this);
+                array.Add(Points[i].ToJson());
             }
+            return array.ToString(Formatting.None);
         }
-
+        
         public void SaveCSV(string path)
         {
             CsvExport csv = new CsvExport();
-            for (int i = 0; i < this.Length; i++)
+            for (int i = 0; i < Length; i++)
             {
                 csv.AddRow();
-                csv["x_val"] = data[i].x_val;
-                csv["y_val"] = data[i].y_val;
+                foreach(KeyValuePair<string, double> p in Points[i].kvPairs)
+                {
+                    csv[p.Key] = p.Value;
+                }
             }
             csv.ExportToFile(@"" + path);
         }
