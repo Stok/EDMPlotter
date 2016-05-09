@@ -79,12 +79,11 @@
                         'SampleRate': document.querySelector('#SampleRate').value
                     };
 
-                    //alert(JSON.stringify(params));
                     // Call the Start method on the hub. 
                     pHub.server.start(JSON.stringify(params));
 
                 });
-                    // Stop plotting
+                    // Stop the experiment
                 $('#stopbutton').click(function () {
                     // Call the Stop method on the hub. 
                     pHub.server.stop();
