@@ -14,6 +14,8 @@ namespace SharedCode
         public bool AutoStart { get; set; }
         public string TriggerAddress { get; set; }
         public int SampleRate { get; set; }
+        public bool EOSStop { get; set; }
+    
 
     }
 }

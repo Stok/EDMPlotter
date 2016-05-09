@@ -64,33 +64,31 @@ namespace EDMPlotter
             {
 
                 es = ExperimentState.IsStarting;
-                Clients.All.toConsole("User issued start command. Starting...");
+                Clients.All.toConsole("Starting...");
                 initialiseExperimentalParameters(jsonParams);
 
                 experimentThread = new Thread(new ThreadStart(run));
                 experimentThread.Start();
 
                 es = ExperimentState.IsRunning;
-                Clients.All.toConsole("Running Experiment...");
+                Clients.All.toConsole("Thread started. Running experiment sequence.");
 
                 //Data should be coming in here; As fake data, generate a point every 0.5 seconds.
             }
         }
         public void StopExperiment()
         {
-            Clients.All.toConsole("User issued stop command. Stopping...");
+            Clients.All.toConsole("Stopping...");
             if (experimentThread != null)
             {
                 es = ExperimentState.IsFinishing;
                 experimentThread.Join();
             }
-            es = ExperimentState.IsStopped;
-            Clients.All.toConsole("Experiment stopped.");
         }
 
         public void Clear()
         {
-            Clients.All.toConsole("User issued clear command. Clearing...");
+            Clients.All.toConsole("Clearing...");
             if (es.Equals (ExperimentState.IsStopped)) {
 				Clients.All.clearData ();
                 Clients.All.toConsole("Cleared.");
@@ -102,7 +100,7 @@ namespace EDMPlotter
         }
         public void Save(string path)
 		{
-            Clients.All.toConsole("User issued save command. Saving to: " + path);
+            Clients.All.toConsole("Saving to: " + path);
             if (es.Equals (ExperimentState.IsStopped)) {
 				saveData(path);
                 Clients.All.toConsole("Data Saved.");
@@ -122,15 +120,23 @@ namespace EDMPlotter
             Clients.All.toConsole("Initialising hardware.");
             hardware.Initialise (parameters);
 
-            Clients.All.toConsole("Running...");
-            dataSet = hardware.Run ();
-
-            Clients.All.toConsole("Experiment completed. Sending data...");
-            //Push data down to the client like this.
-            Clients.All.pushData(dataSet.ToJson());
-            Clients.All.toConsole("Complete. Disposing hardware parameters...");
+            Clients.All.toConsole("Acquiring data...");
+            while (es.Equals(ExperimentState.IsRunning))
+            {
+                dataSet = hardware.Run();
+                //Push data down to the client like this.
+                Clients.All.pushData(dataSet.ToJson());
+                if (parameters.EOSStop)
+                {
+                    break;
+                }
+            } 
+            Clients.All.toConsole("Acquisition complete.");
+            Clients.All.toConsole("Disposing hardware classes...");
             hardware.Dispose();
-            Clients.All.toConsole("Disposed. Click \"stop\" to finalise.");
+            Clients.All.toConsole("Disposed.");
+            Clients.All.toConsole("Setting ExperimentState to stopped and closing thread...");
+            es = ExperimentState.IsStopped;
         }
         #endregion
 
@@ -150,25 +156,25 @@ namespace EDMPlotter
 
         void initialiseExperimentalParameters(string jsonParams)
         {
-
+            Clients.All.toConsole("Reading experimental parameters...");
             try {
                 parameters = JsonConvert.DeserializeObject<ExperimentParameters>(jsonParams);
             }
             catch (JsonException e)
             {
-                Console.WriteLine(e.Message);
-                Console.WriteLine("Loading default values.");
+                Clients.All.toConsole(e.Message);
+                Clients.All.toConsole("Loading default values.");
                 jsonParams = @"{
             'NumberOfPoints': '1000',
             'AINames': ['x_val', 'y_val', 'y_val1', 'y_val2'],
             'AIAddresses': ['/dev1/ai1', '/dev1/ai2', '/dev1/ai3', '/dev1/ai4'],
             'AutoStart': 'false',
             'TriggerAddress': '/dev1/PFI0',
-            'SampleRate': '200'
+            'SampleRate': '200',
+            'EOSStop' : true
             }";
                 parameters = JsonConvert.DeserializeObject<ExperimentParameters>(jsonParams);
             }
-
 
         }
 
