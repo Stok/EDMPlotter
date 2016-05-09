@@ -85,7 +85,7 @@ namespace EDMPlotter
             es = ExperimentState.IsStopped;
         }
 
-        public void ClearExperiment()
+        public void Clear()
         {
 			if (es.Equals (ExperimentState.IsStopped)) {
 				Clients.All.clearData ();

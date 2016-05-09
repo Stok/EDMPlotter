@@ -11,7 +11,7 @@
     <div class="controlpanel">
         <input type="button" id="startbutton" value="Start" />
         <input type="button" id="stopbutton" value="Stop" />
-        <input type="button" id="clearplotbutton" value="Clear" />
+        <input type="button" id="clearbutton" value="Clear" />
         <input type="button" id="savedatabutton" value="Save to" />
         <input type="text" id="savepathtextbox" value="C:\data\data.csv" />
     </div>
@@ -19,7 +19,11 @@
 
        <form name="ExpParams" id="ExpParams">
            Auto-trigger:<br>
-           <input type="text" name="AutoStart" id="AutoStart" value="false"><br>
+           <select name="AutoStart" id="AutoStart">
+            <option>false</option>
+            <option>true</option>
+           </select>
+            <br>
            Number of points:<br>
            <input type="text" name="NumberOfPoints" id="NumberOfPoints" value="1000"><br>
            Sample rate:<br>

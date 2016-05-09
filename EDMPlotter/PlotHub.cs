@@ -30,7 +30,7 @@ namespace EDMPlotter
 
         public void ClearAll()
         {
-            Experiment.Instance.ClearExperiment();
+            Experiment.Instance.Clear();
         }
 
         public void Save(string path)
