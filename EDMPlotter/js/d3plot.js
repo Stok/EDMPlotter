@@ -112,9 +112,15 @@ function plotData(svgId, data) {
             return d.x_val;
         }));
 
-        yScale.domain(d3.extent(data, function(d) {
-            return d.y_val;
-        }));
+        //yScale.domain(d3.extent(data, function(d) {
+        //    return d.y_val;
+        //}));
+        maxY = findMaxY(categories); // Find max Y y_val value categories data with "visible"; true
+        minY = findMinY(categories);
+        yScale.domain([minY, maxY]); // Redefine yAxis domain based on highest y value of categories data with "visible"; true
+        svg.select(".y.axis")
+                .transition()
+                .call(yAxis);
 
         xScale2.domain(xScale.domain());
 
@@ -402,7 +408,7 @@ function plotData(svgId, data) {
         return d3.min(minYValues);
     }
 
-    //updatePlot(data);
+    updatePlot(data);
 
 
 };
