@@ -38,6 +38,7 @@ namespace EDMPlotter
 			//hardware = new FakeHardware();
 
             es = ExperimentState.IsStopped;
+            Clients.All.toConsole("Experiment is ready.");
         }
 
         public static Experiment Instance
@@ -63,39 +64,53 @@ namespace EDMPlotter
             {
 
                 es = ExperimentState.IsStarting;
-
+                Clients.All.toConsole("User issued start command. Starting...");
                 initialiseExperimentalParameters(jsonParams);
 
                 experimentThread = new Thread(new ThreadStart(run));
                 experimentThread.Start();
 
                 es = ExperimentState.IsRunning;
-
+                Clients.All.toConsole("Running Experiment...");
 
                 //Data should be coming in here; As fake data, generate a point every 0.5 seconds.
             }
         }
         public void StopExperiment()
         {
+            Clients.All.toConsole("User issued stop command. Stopping...");
             if (experimentThread != null)
             {
                 es = ExperimentState.IsFinishing;
                 experimentThread.Join();
             }
             es = ExperimentState.IsStopped;
+            Clients.All.toConsole("Experiment stopped.");
         }
 
         public void Clear()
         {
-			if (es.Equals (ExperimentState.IsStopped)) {
+            Clients.All.toConsole("User issued clear command. Clearing...");
+            if (es.Equals (ExperimentState.IsStopped)) {
 				Clients.All.clearData ();
-			}
+                Clients.All.toConsole("Cleared.");
+            }
+            else
+            {
+                Clients.All.toConsole("Cannot clear data. Experiment is still running.");
+            }
         }
         public void Save(string path)
-		{			
-			if (es.Equals (ExperimentState.IsStopped)) {
+		{
+            Clients.All.toConsole("User issued save command. Saving to: " + path);
+            if (es.Equals (ExperimentState.IsStopped)) {
 				saveData(path);
-			}
+                Clients.All.toConsole("Data Saved.");
+            }
+            else
+            {
+                Clients.All.toConsole("Cannot save data. Experiment is still running.");
+            }
             
         }
 
@@ -104,15 +119,18 @@ namespace EDMPlotter
         #region RUN
         void run()
         {
-            
+            Clients.All.toConsole("Initialising hardware.");
             hardware.Initialise (parameters);
 
-			dataSet = hardware.Run ();
+            Clients.All.toConsole("Running...");
+            dataSet = hardware.Run ();
 
-			//Push data down to the client like this.
-			Clients.All.pushData(dataSet.ToJson());
-
-			hardware.Dispose();
+            Clients.All.toConsole("Experiment completed. Sending data...");
+            //Push data down to the client like this.
+            Clients.All.pushData(dataSet.ToJson());
+            Clients.All.toConsole("Complete. Disposing hardware parameters...");
+            hardware.Dispose();
+            Clients.All.toConsole("Disposed. Click \"stop\" to finalise.");
         }
         #endregion
 

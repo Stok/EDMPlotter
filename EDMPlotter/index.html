@@ -5,6 +5,7 @@
     <title>Experiment Control Panel</title>
     <link rel="stylesheet" type="text/css" href="css/containerstyle.css">
     <link rel="stylesheet" type="text/css" href="css/controlpanelstyle.css">
+    <link rel="stylesheet" type="text/css" href="css/consoleboxstyle.css">
     <link rel="stylesheet" type="text/css" href="css/d3plotstyle.css">
 </head>
 <body>
@@ -30,7 +31,10 @@
            <input type="text" name="SampleRate" id="SampleRate" value="200"><br>
        </form>
 
-        </div>
+    </div>
+    <div class="consolebox">
+        <textarea id="localconsole" style="width: 1000px; height:100px; padding: 2px; border: 1px solid black" readonly></textarea>
+    </div>
     <div class="container">
         <svg id="plot" width="1000" height="500"></svg>
     </div>  
@@ -51,8 +55,12 @@
         
         //These control the server's data-pushing down to the client.
         $(function () {
+
+            $('#localconsole').val("Hi! Connecting to experiment now.");
+
             // Declare a proxy to reference the hub. 
             var pHub = $.connection.plotHub;
+
 
             // Create a function that the hub can call to plot the data.
             pHub.client.pushData = function (data) {
@@ -64,6 +72,9 @@
                 clearData("#" + "plot");
             }
 
+            pHub.client.toConsole = function (s) {
+                $('#localconsole').val($('#localconsole').val() + '\n' + s);
+            }
 
                     // Start the connection, and start plotting!
             $.connection.hub.start().done(function () {
