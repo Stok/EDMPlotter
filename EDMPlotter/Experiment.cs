@@ -91,10 +91,10 @@ namespace EDMPlotter
 				Clients.All.clearData ();
 			}
         }
-        public void SaveExperiment(string path)
+        public void Save(string path)
 		{			
 			if (es.Equals (ExperimentState.IsStopped)) {
-				saveExperiment(path);
+				saveData(path);
 			}
             
         }
@@ -118,7 +118,7 @@ namespace EDMPlotter
 
         #region private 
 
-        void saveExperiment(string path)
+        void saveData(string path)
         {
             try {
                 //To CSV

@@ -18,12 +18,12 @@ namespace EDMPlotter
            _experiment = e;
         }
 
-        public void StartPlotting(string parameters)
+        public void Start(string parameters)
 		{
             Experiment.Instance.StartExperiment(parameters);
 		}
 
-        public void StopPlotting()
+        public void Stop()
         {
             Experiment.Instance.StopExperiment();
         }
@@ -35,7 +35,7 @@ namespace EDMPlotter
 
         public void Save(string path)
         {
-            Experiment.Instance.SaveExperiment(path);
+            Experiment.Instance.Save(path);
         }
 
     }

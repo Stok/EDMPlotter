@@ -9,8 +9,8 @@
 </head>
 <body>
     <div class="controlpanel">
-        <input type="button" id="plotbutton" value="Start" />
-        <input type="button" id="stopplotbutton" value="Stop" />
+        <input type="button" id="startbutton" value="Start" />
+        <input type="button" id="stopbutton" value="Stop" />
         <input type="button" id="clearplotbutton" value="Clear" />
         <input type="button" id="savedatabutton" value="Save to" />
         <input type="text" id="savepathtextbox" value="C:\data\data.csv" />
@@ -64,7 +64,7 @@
                     // Start the connection, and start plotting!
             $.connection.hub.start().done(function () {
 
-                $('#plotbutton').click(function () {
+                $('#startbutton').click(function () {
 
                     var params = {
                         'NumberOfPoints': document.querySelector('#NumberOfPoints').value,
@@ -76,19 +76,19 @@
                     };
 
                     //alert(JSON.stringify(params));
-                    // Call the StartPlotting method on the hub. 
-                    pHub.server.startPlotting(JSON.stringify(params));
+                    // Call the Start method on the hub. 
+                    pHub.server.start(JSON.stringify(params));
 
                 });
                     // Stop plotting
-                $('#stopplotbutton').click(function () {
-                    // Call the StopPlotting method on the hub. 
-                    pHub.server.stopPlotting();
+                $('#stopbutton').click(function () {
+                    // Call the Stop method on the hub. 
+                    pHub.server.stop();
 
                 });
                 
                     //Clears Plot
-                $('#clearplotbutton').click(function () {
+                $('#clearbutton').click(function () {
                     // Call the StopPlotting method on the hub. 
                     pHub.server.clearAll();
 
