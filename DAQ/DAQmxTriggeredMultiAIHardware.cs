@@ -30,6 +30,7 @@ namespace DAQ
 
 		public DataSet Run()
 		{
+            data = new DataSet();
 			double[,] d = readAI (parameters.NumberOfPoints);
             double[] instantD = new double[parameters.AIAddresses.Length];
 			lock (updateDataLock)

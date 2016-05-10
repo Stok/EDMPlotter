@@ -78,11 +78,15 @@ namespace EDMPlotter
         }
         public void StopExperiment()
         {
-            Clients.All.toConsole("Stopping...");
-            if (experimentThread != null)
+            if (experimentThread.IsAlive)
             {
+                Clients.All.toConsole("Stopping...");
                 es = ExperimentState.IsFinishing;
                 experimentThread.Join();
+            }
+            else
+            {
+                Clients.All.toConsole("Experiment seems to be stopped already.");
             }
         }
 
