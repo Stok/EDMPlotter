@@ -5,7 +5,6 @@ function initialisePlot(domElement) {
 
 function addData(domElement, data, visibility) {
     Plotly.addTraces(domElement, data);
-    Plotly.
 }
 
 function deletePreviousData(domElement, numberOfTracesToDelete) {

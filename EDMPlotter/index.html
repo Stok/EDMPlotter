@@ -56,10 +56,10 @@
     <script charset="utf-8" type="text/javascript" src="Scripts/d3.v3.min.js"></script>
     <!--<script src="http://d3js.org/d3.v3.js"></script>-->
     <!--Add script to plot some data.-->
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!--<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>-->
     
-    <script src="js/plotlyplot.js" type="text/javascript"></script>
-
+    <!--<script src="js/plotlyplot.js" type="text/javascript"></script>-->
+    <script src="js/d3plot.js" type="text/javascript"></script>
     <script type="text/javascript">
     //These control the server's data-pushing down to the client.
     $(function() {
@@ -77,7 +77,7 @@
         //Getting plot ready.
         initialisePlot(document.getElementById("plot"));
 
-        // Declare a proxy to reference the hub. 
+        // Declare a proxy to reference the hub.
         var pHub = $.connection.plotHub;
 
 
@@ -102,7 +102,7 @@
             pHub.client.clearData();
 
             //Convention: the first element is always the x-axis. mapping the plot function on the others. Note the weird index assignment for slice.
-            plotDataArray.slice(1, tempArray.length + 1).map(function (d) {
+            plotDataArray.slice(1, plotDataArray.length + 1).map(function (d) {
                 addData(document.getElementById("plot"), [{ x: plotDataArray[0], y: d }]);
             });
             plotContainsData = true;
@@ -139,20 +139,20 @@
                     'eosStop': document.querySelector('#eosstopcheckbox').checked
                 };
 
-                // Call the Start method on the hub. 
+                // Call the Start method on the hub.
                 pHub.server.start(JSON.stringify(params));
 
             });
             // Stop the experiment
             $('#stopbutton').click(function() {
-                // Call the Stop method on the hub. 
+                // Call the Stop method on the hub.
                 pHub.server.stop();
 
             });
 
             //Clears Plot
             $('#clearbutton').click(function() {
-                // Call the StopPlotting method on the hub. 
+                // Call the StopPlotting method on the hub.
                 pHub.server.clearAll();
 
             });
