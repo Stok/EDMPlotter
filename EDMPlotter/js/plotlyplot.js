@@ -1,7 +1,8 @@
 var expParams;
+var showTraceBools;
 
 function initialisePlot(domElement, expParams) {
-    Plotly.newPlot(domElement, [{ x: [0] }], { margin: { t: 0 } }, { modeBarButtonsToRemove: ['sendDataToCloud'], showLink: false, displaylogo: false });
+    Plotly.newPlot(domElement, [{ x: [0] }], { margin: { t: 50, b: 50, l: 50, r: 50 } }, { modeBarButtonsToRemove: ['sendDataToCloud'], showLink: false, displaylogo: false });
     Plotly.deleteTraces(domElement, 0);
     this.expParams = expParams;
 };
@@ -15,13 +16,25 @@ function addData(domElement, data) {
         }
         plotDataArray[j] = tempArray;
     }
-    //Convention: the first element is always the x-axis. mapping the plot function on the others. Note the weird index assignment for slice.
-    plotDataArray.slice(1, plotDataArray.length + 1).map(function(d) {
-        Plotly.addTraces(document.getElementById("plot"), [{ x: plotDataArray[0], y: d }]);
+
+//Convention: the first element is always the x-axis. mapping the plot format on the others. Note the weird index assignment for slice.
+    var final_data = plotDataArray.slice(1, plotDataArray.length + 1).map(function(d) {
+        return { x: plotDataArray[0], y: d, visible: 'true' }
     });
+
+//Making sure the visiblility toggle is carried through from previous scan.
+    for(var i = 0; i<final_data.length; i++) {
+        final_data[i].visible = (showTraceBools == undefined) ? true : showTraceBools[i];
+    }
+    
+    final_data.map(function(d) {
+        Plotly.addTraces(document.getElementById("plot"), d);
+    });
+
 };
 
 function deleteData(domElement) {
+    this.showTraceBools = domElement.data.map(function(d) {return d.visible});
     var numberOfTracesToDelete = expParams.AINames.length - 1;
     var traceIndicesToDelete = []; //prepping for update
     //Note the convention that the first 'name' is always the x-axis. Not a trace!
