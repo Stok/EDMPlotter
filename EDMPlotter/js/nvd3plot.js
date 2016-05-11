@@ -11,30 +11,30 @@ function initialisePlot(domElement, expParams) {
     //        .showLegend(true) //Show the legend, allowing users to turn on/off line series.
     //        .showYAxis(true) //Show the y-axis
     //        .showXAxis(true); //Show the x-axis
-//
-//
-  //      chart.xAxis //Chart x-axis settings
-   //         .axisLabel(expParams.AINames[0])
+    //
+    //
+    //      chart.xAxis //Chart x-axis settings
+    //         .axisLabel(expParams.AINames[0])
     //        .tickFormat(d3.format(',r'));
-//
-//        chart.yAxis //Chart y-axis settings
-//            .axisLabel('AI (V)')
-//            .tickFormat(d3.format('.02f'));
-//
-//        /* Done setting the chart up? Time to render it!*/
-//        /*
-//        var data = [{ values: { x: 0, y: 0 }, key: 'init', color: '#AARRGGBB' }]; //You need data...
+    //
+    //        chart.yAxis //Chart y-axis settings
+    //            .axisLabel('AI (V)')
+    //            .tickFormat(d3.format('.02f'));
+    //
+    //        /* Done setting the chart up? Time to render it!*/
+    //        /*
+    //        var data = [{ values: { x: 0, y: 0 }, key: 'init', color: '#AARRGGBB' }]; //You need data...
 
-//        d3.select(domElement) //Select the <svg> element you want to render the chart in.   
-//            .datum(data) //Populate the <svg> element with chart data...
-//            .call(chart); //Finally, render the chart!
+    //        d3.select(domElement) //Select the <svg> element you want to render the chart in.   
+    //            .datum(data) //Populate the <svg> element with chart data...
+    //            .call(chart); //Finally, render the chart!
 
-        //Update the chart when window resizes.
-////        nv.utils.windowResize(function() { chart.update() });*/
-     //   return chart;
-   // };
+    //Update the chart when window resizes.
+    ////        nv.utils.windowResize(function() { chart.update() });*/
+    //   return chart;
+    // };
     /*These lines are all chart setup.  Pick and choose which chart features you want to utilize. */
-   // nv.addGraph(chart);
+    // nv.addGraph(chart);
 };
 
 
@@ -46,10 +46,10 @@ function addData(domElement, data) {
         for (var i = 0; i < data.length; i++) {
             tempArray.push({ x: data[0][expParams.AINames[j]], y: data[i][expParams.AINames[j]] });
         }
-        plotDataArray[j] = tempArray;
+        plotDataArray.push(tempArray);
     }
 
-    var colors = d3.scale.category10();
+    var colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'];
 
     var final_data = [];
 
@@ -71,7 +71,7 @@ function addData(domElement, data) {
             d3.select(domElement)
                 .attr('width', width)
                 .attr('height', height)
-                .datum(final_data)
+                .datum(sinAndCos())
                 .call(chart);
             return chart;
         },
@@ -93,12 +93,6 @@ function addData(domElement, data) {
         }
     });
 
-
-
-
-
-
-
     //d3.select(domElement) //Select the <svg> element you want to render the chart in.   
     //   .datum(final_data) //Populate the <svg> element with chart data...
     //   .call(chart); //Finally, render the chart!
@@ -106,4 +100,23 @@ function addData(domElement, data) {
     //Update the chart when window resizes.
     //nv.utils.windowResize(function() { chart.update() });
 
+}
+
+function sinAndCos() {
+    var sin = [],
+        cos = [];
+    for (var i = 0; i < 100; i++) {
+        sin.push({ x: i, y: Math.sin(i / 10) });
+        cos.push({ x: i, y: .5 * Math.cos(i / 10) });
+    }
+    return [{
+        values: sin,
+        key: "Sine Wave",
+        color: "#ff7f0e"
+    }, {
+        values: cos,
+        key: "Cosine Wave",
+        color: "#2ca02c",
+        strokeWidth: 3
+    }];
 }
