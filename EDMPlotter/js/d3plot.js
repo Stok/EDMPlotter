@@ -93,9 +93,8 @@ function plotData(svgId, data) {
         color.domain(d3.keys(data[0]).filter(function(key) { // Set the domain of the color ordinal scale to be all the csv headers except "x_val", matching a color to an input
             return key !== "x_val";
         }));
-
+        //Mapping over the colours insead of the data because the colours already eliminated the xaxis.
         var categories = color.domain().map(function(name) { // Nest the data into an array of objects with new keys
-
             return {
                 name: name, // "name": the csv headers except x_val
                 values: data.map(function(d) { // "values": which has an array of the x_vals and y_vals
@@ -112,9 +111,6 @@ function plotData(svgId, data) {
             return d.x_val;
         }));
 
-        //yScale.domain(d3.extent(data, function(d) {
-        //    return d.y_val;
-        //}));
         maxY = findMaxY(categories); // Find max Y y_val value categories data with "visible"; true
         minY = findMinY(categories);
         yScale.domain([minY, maxY]); // Redefine yAxis domain based on highest y value of categories data with "visible"; true

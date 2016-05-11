@@ -22,7 +22,11 @@
     <script src="js/plotlyplot.js" type="text/javascript"></script>
     
     <!--<script charset="utf-8" type="text/javascript" src="Scripts/d3.v3.min.js"></script>
-    <script src="js/d3plot.js" type="text/javascript"></script>-->
+    <script src="js/Customd3plot.js" type="text/javascript"></script>-->
+
+    <!--<script charset="utf-8" type="text/javascript" src="Scripts/d3.v3.min.js"></script>
+    <script charset="utf-8" type="text/javascript" src="Scripts/nv.d3.min.js"></script>
+    <script src="js/nvd3plot.js" type="text/javascript"></script>-->
 
 </head>
 
@@ -78,7 +82,8 @@
 
         //Getting plot ready.
         initialisePlot(document.getElementById("plot"), fixedParams);
-
+        //initialisePlot("#plot", fixedParams);
+       
         // Declare a proxy to reference the hub.
         var pHub = $.connection.plotHub;
 
