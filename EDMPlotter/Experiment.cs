@@ -141,7 +141,7 @@ namespace EDMPlotter
                 }
                 if (parameters.EOSStop)
                 {
-                    break;
+                    es = ExperimentState.IsFinishing;
                 }
                 else
                 {
