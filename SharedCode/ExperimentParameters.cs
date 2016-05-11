@@ -15,7 +15,7 @@ namespace SharedCode
         public string TriggerAddress { get; set; }
         public int SampleRate { get; set; }
         public bool EOSStop { get; set; }
-    
-
+        public bool EOSSave { get; set; }
+        public string SavePath { get; set; }
     }
 }

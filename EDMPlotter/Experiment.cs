@@ -125,14 +125,27 @@ namespace EDMPlotter
             hardware.Initialise (parameters);
 
             Clients.All.toConsole("Acquiring data...");
+            int numberOfScans = 0;
             while (es.Equals(ExperimentState.IsRunning))
             {
                 dataSet = hardware.Run();
                 //Push data down to the client like this.
                 Clients.All.pushData(dataSet.ToJson());
+                if(parameters.EOSSave)
+                {
+                    string path = Path.GetDirectoryName(parameters.SavePath);
+                    string extension = Path.GetExtension(parameters.SavePath);
+                    string fileName = Path.GetFileNameWithoutExtension(parameters.SavePath);
+
+                    saveData(path + "\\" + fileName + "_" + numberOfScans.ToString() + extension);
+                }
                 if (parameters.EOSStop)
                 {
                     break;
+                }
+                else
+                {
+                    numberOfScans++;
                 }
             } 
             Clients.All.toConsole("Acquisition complete.");
@@ -175,7 +188,9 @@ namespace EDMPlotter
             'AutoStart': 'false',
             'TriggerAddress': '/dev1/PFI0',
             'SampleRate': '200',
-            'EOSStop' : true
+            'EOSStop' : true,
+            'EOSSave' : false,
+            'SavePath' : ''
             }";
                 parameters = JsonConvert.DeserializeObject<ExperimentParameters>(jsonParams);
             }
