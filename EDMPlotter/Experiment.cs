@@ -22,7 +22,7 @@ namespace EDMPlotter
         DataSet dataSet;
 		ExperimentParameters parameters;
         enum ExperimentState { IsStopped, IsStarting, IsRunning, IsFinishing}
-        ExperimentState es; //What's the meanning of es ?
+        ExperimentState es; 
 
         object keepRunningCheckLock = new object();
         
@@ -147,6 +147,7 @@ namespace EDMPlotter
                 {
                     numberOfScans++;
                 }
+                
             } 
             Clients.All.toConsole("Acquisition complete.");
             Clients.All.toConsole("Disposing hardware classes...");

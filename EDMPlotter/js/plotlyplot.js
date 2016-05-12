@@ -33,6 +33,14 @@ function addData(domElement, data) {
 
 };
 
+function appendData(domElement, newXYPairs, AIIndex) {
+    for (var i = 0; i < newXYPairs.length; i++) {
+        domElement.data[AIIndex].x.push(newXYPairs[i][0]);
+        domElement.data[AIIndex].y.push(newXYPairs[i][1]);
+    }
+    Plotly.redraw(domElement);
+};
+
 function deleteData(domElement) {
     this.showTraceBools = domElement.data.map(function(d) {return d.visible});
     var numberOfTracesToDelete = expParams.AINames.length - 1;
