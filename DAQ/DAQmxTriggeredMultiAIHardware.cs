@@ -8,62 +8,62 @@ using SharedCode;
 
 namespace DAQ
 {
-	public class DAQmxTriggeredMultiAIHardware : IExperimentHardware
+    public class DAQmxTriggeredMultiAIHardware : IExperimentHardware
     {
 
-		object updateDataLock = new object();
+        object updateDataLock = new object();
 
         private AnalogMultiChannelReader analogReader;
 
         private Task readAIsTask;
 
-		DataSet data;
-		ExperimentParameters parameters;
+        DataSet data;
+        ExperimentParameters parameters;
 
-		#region public region
+        #region public region
 
-		public void Initialise(ExperimentParameters p)
-		{
-			parameters = p;
-			configureReadAI (parameters.NumberOfPoints, parameters.AutoStart);
-		}
+        public void Initialise(ExperimentParameters p)
+        {
+            parameters = p;
+            configureReadAI(parameters.NumberOfPoints, parameters.AutoStart);
+        }
 
-		public DataSet Run()
-		{
+        public DataSet Run()
+        {
             data = new DataSet();
-			double[,] d = readAI (parameters.NumberOfPoints);
+            double[,] d = readAI(parameters.NumberOfPoints);
             double[] instantD = new double[parameters.AIAddresses.Length];
-			lock (updateDataLock)
-			{
-				for (int i = 0; i < parameters.NumberOfPoints; i++)
-				{
-                    for(int j = 0; j < parameters.AIAddresses.Length; j++)
+            lock (updateDataLock)
+            {
+                for (int i = 0; i < parameters.NumberOfPoints; i++)
+                {
+                    for (int j = 0; j < parameters.AIAddresses.Length; j++)
                     {
                         instantD[j] = d[j, i];
                     }
                     data.Add(new DataPoint(parameters.AINames, instantD));
-				}
-			}
-			return data;
-		}
+                }
+            }
+            return data;
+        }
 
-		public void Dispose()
-		{
-			readAIsTask.Dispose();
-		}
-
-		#endregion
-
-
-		#region private region
-
-        void configureReadAI(int numberOfMeasurements, bool autostart) 
+        public void Dispose()
         {
-			data = new DataSet ();
+            readAIsTask.Dispose();
+        }
+
+        #endregion
+
+
+        #region private region
+
+        void configureReadAI(int numberOfMeasurements, bool autostart)
+        {
+            data = new DataSet();
 
             readAIsTask = new Task("readAI");
 
-            for(int i = 0; i < parameters.AINames.Length; i++)
+            for (int i = 0; i < parameters.AINames.Length; i++)
             {
                 readAIsTask.AIChannels.CreateVoltageChannel(parameters.AIAddresses[i], parameters.AINames[i], AITerminalConfiguration.Rse, -10, 10, AIVoltageUnits.Volts);
             }
@@ -76,7 +76,7 @@ namespace DAQ
 
             if (autostart == false)
             {
-                
+
 
                 readAIsTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
                     parameters.TriggerAddress,
@@ -104,8 +104,8 @@ namespace DAQ
 
             return data;
         }
-			
-		#endregion
+
+        #endregion
 
     }
 }

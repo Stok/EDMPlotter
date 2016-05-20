@@ -20,22 +20,22 @@ namespace EDMPlotter
 
 
         DataSet dataSet;
-		ExperimentParameters parameters;
-        enum ExperimentState { IsStopped, IsStarting, IsRunning, IsFinishing}
-        ExperimentState es; 
+        ExperimentParameters parameters;
+        enum ExperimentState { IsStopped, IsStarting, IsRunning, IsFinishing }
+        ExperimentState es;
 
         object keepRunningCheckLock = new object();
-        
+
         Thread experimentThread;
 
-		IExperimentHardware hardware;
+        IExperimentHardware hardware;
 
         public Experiment(IHubConnectionContext<dynamic> clients)
         {
             Clients = clients;
 
-			hardware = new DAQmxTriggeredMultiAIHardware();
-			//hardware = new FakeHardware();
+            hardware = new DAQmxTriggeredMultiAIHardware();
+            //hardware = new FakeHardware();
 
             es = ExperimentState.IsStopped;
             Clients.All.toConsole("Experiment is ready.");
@@ -93,8 +93,9 @@ namespace EDMPlotter
         public void Clear()
         {
             Clients.All.toConsole("Clearing...");
-            if (es.Equals (ExperimentState.IsStopped)) {
-				Clients.All.clearData ();
+            if (es.Equals(ExperimentState.IsStopped))
+            {
+                Clients.All.clearData();
                 Clients.All.toConsole("Cleared.");
             }
             else
@@ -103,17 +104,18 @@ namespace EDMPlotter
             }
         }
         public void Save(string path)
-		{
+        {
             Clients.All.toConsole("Saving to: " + path);
-            if (es.Equals (ExperimentState.IsStopped)) {
-				saveData(path);
+            if (es.Equals(ExperimentState.IsStopped))
+            {
+                saveData(path);
                 Clients.All.toConsole("Data Saved.");
             }
             else
             {
                 Clients.All.toConsole("Cannot save data. Experiment is still running.");
             }
-            
+
         }
 
         #endregion
@@ -122,7 +124,7 @@ namespace EDMPlotter
         void run()
         {
             Clients.All.toConsole("Initialising hardware.");
-            hardware.Initialise (parameters);
+            hardware.Initialise(parameters);
 
             Clients.All.toConsole("Acquiring data...");
             int numberOfScans = 0;
@@ -131,7 +133,7 @@ namespace EDMPlotter
                 dataSet = hardware.Run();
                 //Push data down to the client like this.
                 Clients.All.pushData(dataSet.ToJson());
-                if(parameters.EOSSave)
+                if (parameters.EOSSave)
                 {
                     string path = Path.GetDirectoryName(parameters.SavePath);
                     string extension = Path.GetExtension(parameters.SavePath);
@@ -147,8 +149,8 @@ namespace EDMPlotter
                 {
                     numberOfScans++;
                 }
-                
-            } 
+
+            }
             Clients.All.toConsole("Acquisition complete.");
             Clients.All.toConsole("Disposing hardware classes...");
             hardware.Dispose();
@@ -162,7 +164,8 @@ namespace EDMPlotter
 
         void saveData(string path)
         {
-            try {
+            try
+            {
                 //To CSV
                 dataSet.SaveCSV(path);
             }
@@ -175,7 +178,8 @@ namespace EDMPlotter
         void initialiseExperimentalParameters(string jsonParams)
         {
             Clients.All.toConsole("Reading experimental parameters...");
-            try {
+            try
+            {
                 parameters = JsonConvert.DeserializeObject<ExperimentParameters>(jsonParams);
             }
             catch (JsonException e)

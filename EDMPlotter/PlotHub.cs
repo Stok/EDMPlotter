@@ -7,21 +7,21 @@ using Newtonsoft.Json;
 
 namespace EDMPlotter
 {
-	public class PlotHub : Hub
-	{
+    public class PlotHub : Hub
+    {
         private readonly Experiment _experiment;
 
         public PlotHub() : this(Experiment.Instance) { }
 
         public PlotHub(Experiment e)
         {
-           _experiment = e;
+            _experiment = e;
         }
 
         public void Start(string parameters)
-		{
+        {
             Experiment.Instance.StartExperiment(parameters);
-		}
+        }
 
         public void Stop()
         {
@@ -41,6 +41,6 @@ namespace EDMPlotter
     }
 
 
-    
+
 }
 
