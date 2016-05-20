@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.IO;
@@ -8,27 +8,7 @@ using System.Web;
 
 namespace Jitbit.Utils
 {
-    /// <summary>
-    /// Simple CSV export
-    /// Example:
-    ///   CsvExport myExport = new CsvExport();
-    ///
-    ///   myExport.AddRow();
-    ///   myExport["Region"] = "New York, USA";
-    ///   myExport["Sales"] = 100000;
-    ///   myExport["Date Opened"] = new DateTime(2003, 12, 31);
-    ///
-    ///   myExport.AddRow();
-    ///   myExport["Region"] = "Sydney \"in\" Australia";
-    ///   myExport["Sales"] = 50000;
-    ///   myExport["Date Opened"] = new DateTime(2005, 1, 1, 9, 30, 0);
-    ///
-    /// Then you can do any of the following three output options:
-    ///   string myCsv = myExport.Export();
-    ///   myExport.ExportToFile("Somefile.csv");
-    ///   byte[] myCsvData = myExport.ExportToBytes();
-    /// </summary>
-    public class CsvExport
+    public class TsvExport
     {
         /// <summary>
         /// To keep the ordered list of column names
@@ -38,12 +18,19 @@ namespace Jitbit.Utils
         /// <summary>
         /// The list of rows
         /// </summary>
-        List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
+        List<Dictionary<string, object>> rows = new List<Dictionary<string,
+        object>>();
 
         /// <summary>
         /// The current row
         /// </summary>
-        Dictionary<string, object> currentRow { get { return rows[rows.Count - 1]; } }
+        Dictionary<string, object> currentRow
+        {
+            get
+            {
+                return rows[rows.Count - 1];
+            }
+        }
 
         /// <summary>
         /// Set a value on this column
@@ -131,7 +118,8 @@ namespace Jitbit.Utils
             yield return "sep=,";
 
             // The header
-            yield return string.Join(",", fields);
+            //yield return string.Join(",", fields);
+            yield return string.Join("  ", fields); //L'espace "  " à la place de la virgule "," comme séparateur de colonnes
 
             // The rows
             foreach (Dictionary<string, object> row in rows)
@@ -140,7 +128,8 @@ namespace Jitbit.Utils
                 {
                     row[k] = null;
                 }
-                yield return string.Join(",", fields.Select(field => MakeValueCsvFriendly(row[field])));
+                //yield return string.Join(",", fields.Select(field =>MakeValueCsvFriendly(row[field])));
+                yield return string.Join("  ", fields.Select(field => MakeValueCsvFriendly(row[field]))); //L'espace "  " à la place de la virgule "," comme séparateur de colonnes
             }
         }
 

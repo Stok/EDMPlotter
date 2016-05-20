@@ -166,8 +166,7 @@ namespace EDMPlotter
         {
             try
             {
-                //To CSV
-                dataSet.SaveCSV(path);
+                dataSet.Save(path);
             }
             catch (IOException e)
             {

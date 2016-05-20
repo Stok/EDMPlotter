@@ -40,9 +40,10 @@ namespace SharedCode
             return array.ToString(Formatting.None);
         }
         
-        public void SaveCSV(string path)
+        public void Save(string path)
         {
-            CsvExport csv = new CsvExport();
+            //CsvExport csv = new CsvExport();
+            TsvExport csv = new TsvExport();
             for (int i = 0; i < Length; i++)
             {
                 csv.AddRow();
@@ -53,6 +54,5 @@ namespace SharedCode
             }
             csv.ExportToFile(@"" + path);
         }
-
     }
 }
